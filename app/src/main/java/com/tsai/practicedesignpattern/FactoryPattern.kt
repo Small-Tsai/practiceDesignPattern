@@ -8,8 +8,23 @@ interface CookMealManager {
     fun delivery()
 }
 
-interface MealFactoryProvider {
-    fun createMeal(): CookMealManager
+/**
+ * 不同的餐廳可能有不同的醬料 因此建立抽象化的醬料規範
+ */
+interface Ingredient {
+    fun getSauce()
+}
+
+class TWIngredient : Ingredient {
+    override fun getSauce() {
+        println("淋上台式醬料！")
+    }
+}
+
+class ITIngredient : Ingredient {
+    override fun getSauce() {
+        println("淋上義式醬料")
+    }
 }
 
 class Steak : CookMealManager {
@@ -47,42 +62,58 @@ enum class MealType {
 }
 
 /**
- * 隨著料理越來越多，假如我們在 Restaurant 不斷用 if else 判斷料理型別，
- * 會造成 Restaurant類非常臃腫，餐廳只需專注在餐點的處理上即可，因此建立一個工廠來專門依照型別建立不同食材。
- * 同樣的隨著食材越來越多 (豬牛羊雞.....) 工廠的邏輯也會越來越臃腫 因此我們把工廠建立食材的方法抽像化，
- * 讓不同的工廠遵守相同的規範即可，例如一間大型食品公司成立許多分工廠來為其生產不同類別的食材。
+ * 利用 abstract class 將各種抽象物件整合在一起 並透過實體工廠來實作生產產品的過程
  */
-class SteakFactory : MealFactoryProvider {
-    override fun createMeal(): CookMealManager {
-        return Steak()
-    }
-}
+abstract class Restaurant {
 
-class ChickenFactory : MealFactoryProvider {
-    override fun createMeal(): CookMealManager {
-        return Chicken()
-    }
-}
-
-class PorkFactory : MealFactoryProvider {
-    override fun createMeal(): CookMealManager {
-        return Pork()
-    }
-}
-
-class Restaurant(private val mealFactory: MealFactoryProvider) {
-
-    fun mealOrder(): CookMealManager {
-        val meal = mealFactory.createMeal()
+    fun mealOrder(mealType: MealType): CookMealManager {
+        val meal = createMeal(mealType)
+        val ingredient = getIngredient()
         meal.cook()
+        ingredient.getSauce()
         meal.delivery()
         return meal
     }
+
+    abstract fun createMeal(mealType: MealType): CookMealManager
+    abstract fun getIngredient(): Ingredient
+}
+
+class TWRestaurant : Restaurant() {
+
+    override fun createMeal(mealType: MealType): CookMealManager {
+        return when (mealType) {
+            MealType.STEAK -> Steak()
+            MealType.CHICKEN -> Chicken()
+            MealType.PORK -> Pork()
+        }
+    }
+
+    override fun getIngredient(): Ingredient = TWIngredient()
+
+}
+
+class ITRestaurant : Restaurant() {
+
+    override fun createMeal(mealType: MealType): CookMealManager {
+        return when (mealType) {
+            MealType.STEAK -> Steak()
+            MealType.CHICKEN -> Chicken()
+            MealType.PORK -> Pork()
+        }
+    }
+
+    override fun getIngredient(): Ingredient = ITIngredient()
+
 }
 
 fun main() {
-    val steakRestaurant = Restaurant(SteakFactory())
-    val chickenRestaurant = Restaurant(ChickenFactory())
-    steakRestaurant.mealOrder()
-    chickenRestaurant.mealOrder()
+    val TWRestaurant = TWRestaurant()
+    TWRestaurant.mealOrder(MealType.STEAK)
+    TWRestaurant.mealOrder(MealType.CHICKEN)
+
+    val ITRestaurant = ITRestaurant()
+    ITRestaurant.mealOrder(MealType.STEAK)
+    ITRestaurant.mealOrder(MealType.CHICKEN)
+
 }
