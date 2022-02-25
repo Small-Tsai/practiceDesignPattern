@@ -1,7 +1,5 @@
 package com.tsai.practicedesignpattern
 
-import android.util.Log
-
 interface Grandma {
     fun snore()
     fun sleep()
@@ -14,21 +12,21 @@ interface Wolf {
 
 class DefaultGrandma : Grandma {
     override fun snore() {
-        Log.d(TAG, "snore: Grandma snore")
+        println("snore: Grandma snore")
     }
 
     override fun sleep() {
-        Log.d(TAG, "snore: Grandma sleep")
+        println("sleep: Grandma sleep")
     }
 }
 
 class DefaultWolf : Wolf {
     override fun bark() {
-        Log.d(TAG, "wolf bark")
+        println("wolf bark")
     }
 
     override fun sleep() {
-        Log.d(TAG, "wolf sleep")
+        println("wolf sleep")
     }
 }
 
@@ -46,4 +44,20 @@ class GrandmaHome {
     fun call(grandma: Grandma) {
         grandma.snore()
     }
+}
+
+fun main() {
+    /**
+     * Adapter design pattern
+     */
+    val grandma = DefaultGrandma()
+    val wolf = DefaultWolf()
+
+    /**
+     * Wolf ----> Grandma 試著用[WolfAdapter]把狼偽裝成奶奶
+     */
+    val wolfAdapter = WolfAdapter(wolf)
+    val grandmaHome = GrandmaHome()
+    grandmaHome.call(grandma)
+    grandmaHome.call(wolfAdapter)
 }

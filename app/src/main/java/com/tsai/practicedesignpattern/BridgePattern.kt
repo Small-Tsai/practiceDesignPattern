@@ -2,6 +2,7 @@ package com.tsai.practicedesignpattern
 
 import android.util.Log
 
+
 // Bridge
 interface Color {
     fun getColor(): String
@@ -111,4 +112,25 @@ class NormalCar(override val carColor: CarColor) : Car {
     override fun run() {
         Log.d(TAG, "run: 用油在跑")
     }
+}
+
+fun main() {
+    /**
+     * Bridge design pattern
+     */
+    val white = White()
+    val bag = BackPack()
+    bag.setColor(white)
+    println("bag name = ${bag.getName()}")
+
+    /**
+     * 練習 Bridge
+     */
+    val color = DefaultCarColor()
+    val electricCar = ElectricCar(color)
+    val normalCar = NormalCar(color)
+    Log.d(TAG, "car color = ${electricCar.carColor.color()}")
+    Log.d(TAG, "car color = ${normalCar.carColor.color()}")
+    electricCar.run()
+    normalCar.run()
 }

@@ -1,7 +1,5 @@
 package com.tsai.practicedesignpattern
 
-import android.util.Log
-
 interface Cloth {
     fun wear()
 }
@@ -12,20 +10,35 @@ interface Hat {
 
 class Shirt : Cloth {
     override fun wear() {
-        Log.d(TAG, "wear: shirt")
+        println("wear: shirt")
     }
 }
 
 class Dress : Cloth {
     override fun wear() {
-        Log.d(TAG, "wear: Dress")
+        println("wear: Dress")
     }
 }
 
 class OldHat : Hat {
     override fun putOn() {
-        Log.d(TAG, "putOn: oldHat")
+        println("putOn: oldHat")
     }
 }
 
 class Person(cloth: Cloth, hat: Hat) : Cloth by cloth, Hat by hat
+
+fun main() {
+    /**
+     * Delegation design pattern
+     */
+    val shirt = Shirt()
+    val dress = Dress()
+    val oldHat = OldHat()
+    val personShirt = Person(shirt, oldHat)
+    val personDress = Person(dress, oldHat)
+
+    personShirt.wear()
+    personDress.wear()
+    personShirt.putOn()
+}

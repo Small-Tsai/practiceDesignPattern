@@ -1,26 +1,24 @@
 package com.tsai.practicedesignpattern
 
-import android.util.Log
-
 interface FightStrategy {
     fun execute()
 }
 
 class NormalAttack : FightStrategy {
     override fun execute() {
-        Log.d(TAG, "execute: 普通攻擊")
+        println("execute: 普通攻擊")
     }
 }
 
 class FireBall : FightStrategy {
     override fun execute() {
-        Log.d(TAG, "execute: 火球術")
+        println("execute: 火球術")
     }
 }
 
 class Item : FightStrategy {
     override fun execute() {
-        Log.d(TAG, "execute: 使用道具")
+        println("execute: 使用道具")
     }
 }
 
@@ -31,7 +29,7 @@ enum class Strategy {
 class Adventurer {
     private var fightStrategy: FightStrategy? = null
 
-    private fun setStrategy(fightStrategy: FightStrategy){
+    private fun setStrategy(fightStrategy: FightStrategy) {
         this.fightStrategy = fightStrategy
     }
 
@@ -48,8 +46,18 @@ class Adventurer {
         if (fightStrategy == null) {
             this.fightStrategy = NormalAttack()
         }
-
         fightStrategy?.execute()
     }
 
+}
+
+fun main() {
+    /**
+     * Strategy design pattern
+     */
+    val adventurer = Adventurer()
+    adventurer.choiceFightStrategy(Strategy.FIREBALL)
+    adventurer.attack()
+    adventurer.choiceFightStrategy(Strategy.ITEM)
+    adventurer.attack()
 }
